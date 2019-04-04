@@ -1,0 +1,614 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <meta charset="utf-8">
+  <title>Simple Calculator</title>
+  <link rel="stylesheet" href="Library/js/jquery.mobile-1.4.5.css">
+  <script src="js/jquery.js"></script>
+  <script src="js/jquery.mobile-1.4.5.js"></script>
+  <style>
+    #display,
+    #memory {
+      text-align: right;
+      font-style: italic;
+    }
+
+    #memory {
+      font-size: 20px;
+    }
+
+    button {
+      border: none;
+    }
+
+    #keyC,
+    #keyCE {
+      background-color: #f46842;
+      color: white;
+    }
+
+    #equals {
+      background-color: red;
+      color: grey;
+    }
+
+    #plus,
+    #multiply,
+    #divide,
+    #minus {
+      background-color: #f4a166;
+      color: white;
+    }
+  </style>
+</head>
+
+<body>
+
+  <div data-role="page" id="pg1">
+
+    <!-- header for the page -->
+    <div data-role="header">
+      <h2 id="simp">Simple Calculator</h2>
+    </div>
+    <!-- Tabs -->
+    <div data-role="tabs">
+      <!-- This is the navbar -->
+      <div data-role="navbar">
+        <ul>
+          <li><a href="#home" data-icon="home" class="ui-btn-active">Home</a></li>
+          <li><a href="#calcu" data-icon="grid">Calculation</a></li>
+          <li><a href="#info" data-icon="info">Help</a></li>
+        </ul>
+      </div>
+      <div data-role="main" class="ui-content">
+        <!-- home -->
+        <div id="home">
+          <h4>This is a jQuery mobile exercise which provides the user with a calculator for basic mathemathical operations</h2>
+        </div>
+        <!-- Claculation -->
+        <div id="calcu">
+          <form id="calculation">
+            <!-- text input acting as display-->
+            <h2 id="memory"></h2>
+            <h2 id="display">0</h2>
+            <!-- grid for calculator -->
+            <!-- A -->
+            <div class="ui-grid-a">
+              <div class="ui-block-a"><button type="button" id="keyC">C</button></div>
+              <div class="ui-block-b"><button type="button" id="keyCE">CE</button></div>
+            </div>
+            <!-- B -->
+            <div class="ui-grid-c">
+              <div class="ui-block-a"><button type="button" id="key7">7</button></div>
+              <div class="ui-block-b"><button type="button" id="key8">8</button></div>
+              <div class="ui-block-c"><button type="button" id="key9">9</button></div>
+              <div class="ui-block-d"><button type="button" id="divide">÷</button></div>
+            </div>
+            <!-- B -->
+            <div class="ui-grid-c">
+              <div class="ui-block-a"><button type="button" id="key6">6</button></div>
+              <div class="ui-block-b"><button type="button" id="key5">5</button></div>
+              <div class="ui-block-c"><button type="button" id="key4">4</button></div>
+              <div class="ui-block-d"><button type="button" id="multiply">x</button></div>
+            </div>
+            <!-- B -->
+            <div class="ui-grid-c">
+              <div class="ui-block-a"><button type="button" id="key3">3</button></div>
+              <div class="ui-block-b"><button type="button" id="key2">2</button></div>
+              <div class="ui-block-c"><button type="button" id="key1">1</button></div>
+              <div class="ui-block-d"><button type="button" id="minus">-</button></div>
+            </div>
+            <!-- B -->
+            <div class="ui-grid-c">
+              <div class="ui-block-a"><button type="button" id="keydot">.</button></div>
+              <div class="ui-block-b"><button type="button" id="key0">0</button></div>
+              <div class="ui-block-c"><button type="button" id="equals">=</button></div>
+              <div class="ui-block-d"><button type="button" id="plus">+</button></div>
+            </div>
+
+        </div>
+        <!-- INFO -->
+        <div id="info">
+          <h4>This is the help section and provides basic information about how to use the calculator</h4>
+          <a href="#popupDialog" data-rel="popup" data-position-to="window" data-transition="pop" class="ui-btn ui-btn-b ui-corner-all ui-shadow ui-icon-info ui-btn-icon-left ">More info</a>
+          <!-- pop up dialog what should be able to be dismissed -->
+          <div data-role="popup" id="popupDialog" data-overlay-theme="b" data-theme="b" data-dismissible="false" style="max-width:2000px;">
+            <a href="#" data-rel="back" class="ui-btn ui-corner-all ui-shadow ui-btn-a ui-icon-delete ui-btn-icon-notext ui-btn-left">close</a>
+            <div data-role="header" data-theme="a">
+              <h1>More info</h1>
+            </div>
+            <div role="main" class="ui-content">
+              <h3>You have requested more information about the application.</h3>
+              <a href="#" class="ui-btn ui-corner-all ui-icon-back ui-btn-icon-left" data-rel="back" data-transition="flow">Dismiss</a>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <!-- footer -->
+    <div data-role="footer">
+      <h5>Homework coded by ©Kissoon Neeschal BCNS17AFT</h5>
+    </div>
+  </div>
+  <!-- Logic for the calculator -->
+  <script>
+    $(document).ready(function() {
+      //Initialising variables
+      var firstval;
+      var secondval;
+      var ans;
+      var operation;
+      var calculated = false;
+      var multcounter = 0;
+      //clearing displays
+      $("#keyC").click(function() {
+        var typed = $("h2#display").text();
+        var i = typed.length;
+        var x = i - 1;
+        var print = typed.substring(0, x);
+        $("h2#display").text(print);
+      });
+      $("#keyCE").click(function() {
+        $("h2#display").text("0");
+        $("h2#memory").text("   ");
+        operation = null;
+        calculated = false;
+        ans = null;
+        multcounter = 0;
+        firstval = null;
+        secondval = null;
+      })
+      //printing value on the display
+      $("#key1").click(function() {
+        var i = $("h2#display").text();
+        var size = $("h2#display").text().length;
+        if ((i == "0") && (size == "1")) {
+          var x = "1";
+        } else {
+          var x = i + "1";
+        }
+        $("h2#display").text(x);
+      });
+      $("#key2").click(function() {
+        var i = $("h2#display").text();
+        var size = $("h2#display").text().length;
+        if ((i == "0") && (size == "1")) {
+          var x = "2";
+        } else {
+          var x = i + "2";
+        }
+        $("h2#display").text(x);
+      });
+      $("#key3").click(function() {
+        var i = $("h2#display").text();
+        var size = $("h2#display").text().length;
+        if ((i == "0") && (size == "1")) {
+          var x = "3";
+        } else {
+          var x = i + "3";
+        }
+        $("h2#display").text(x);
+      });
+      $("#key4").click(function() {
+        var i = $("h2#display").text();
+        var size = $("h2#display").text().length;
+        if ((i == "0") && (size == "1")) {
+          var x = "4";
+        } else {
+          var x = i + "4";
+        }
+        $("h2#display").text(x);
+      });
+      $("#key5").click(function() {
+        var i = $("h2#display").text();
+        var size = $("h2#display").text().length;
+        if ((i == "0") && (size == "1")) {
+          var x = "5";
+        } else {
+          var x = i + "5";
+        }
+        $("h2#display").text(x);
+      });
+      $("#key6").click(function() {
+        var i = $("h2#display").text();
+        var size = $("h2#display").text().length;
+        if ((i == "0") && (size == "1")) {
+          var x = "6";
+        } else {
+          var x = i + "6";
+        }
+        $("h2#display").text(x);
+      });
+      $("#key7").click(function() {
+        var i = $("h2#display").text();
+        var size = $("h2#display").text().length;
+        if ((i == "0") && (size == "1")) {
+          var x = "7";
+        } else {
+          var x = i + "7";
+        }
+        $("h2#display").text(x);
+      });
+      $("#key8").click(function() {
+        var i = $("h2#display").text();
+        var size = $("h2#display").text().length;
+        if ((i == "0") && (size == "1")) {
+          var x = "8";
+        } else {
+          var x = i + "8";
+        }
+        $("h2#display").text(x);
+      });
+      $("#key9").click(function() {
+        var i = $("h2#display").text();
+        var size = $("h2#display").text().length;
+        if ((i == "0") && (size == "1")) {
+          var x = "9";
+        } else {
+          var x = i + "9";
+        }
+        $("h2#display").text(x);
+      });
+      $("#key0").click(function() {
+        var i = $("h2#display").text();
+        var size = $("h2#display").text().length;
+        if ((i == "0") && (size == "1")) {
+          var x = "0";
+        } else {
+          var x = i + "0";
+        }
+        $("h2#display").text(x);
+      });
+      $("#keydot").click(function() {
+        var i = $("h2#display").text();
+        var size = $("h2#display").text().length;
+        if ((i == "0") && (size == "1")) {
+          var x = ".";
+        } else {
+          var x = i + ".";
+        }
+        $("h2#display").text(x);
+      });
+      //obtaining operations & values
+      $("#multiply").click(function() {
+        if ((firstval != null) && (secondval == null) && (calculated == false) && (multcounter == 0)) {
+          //incrementing multcounter
+          multcounter++;
+          //obtaining value of current display
+          secondval = parseFloat($("h2#display").text());
+          //Initialising current value to zero
+          $("h2#display").text("0");
+          switch (operation) {
+            case "multiply":
+              ans = firstval * secondval;
+              //inputing value into memory
+              $("h2#memory").text(ans);
+              //Initialising last answer as first value and second value as null to continue operations
+              firstval = ans;
+              secondval = null;
+              //Initialising last press operation
+              operation = "multiply";
+              var i = ans + " x "
+              break;
+            case "minus":
+              ans = firstval - secondval;
+              $("h2#memory").text(ans);
+              firstval = ans;
+              secondval = null;
+              operation = "multiply";
+              var i = ans + " x "
+              break;
+            case "plus":
+              ans = firstval + secondval;
+              $("h2#memory").text(ans);
+              firstval = ans;
+              secondval = null;
+              operation = "multiply";
+              var i = ans + " x "
+              break;
+            case "divide":
+              ans = firstval / secondval;
+              $("h2#memory").text(ans);
+              firstval = ans;
+              secondval = null;
+              operation = "multiply";
+              var i = ans + " x "
+              break;
+            default:
+              ans = "ERROR";
+              break;
+          }
+        } else if ((firstval != null) && (secondval == null) && (calculated == false) && (multcounter == 1)) {
+          var x = firstval + " x ";
+          $("h2#memory").text(x);
+          operation = "multiply";
+          $("h2#display").text("0");
+          calculated = false;
+          multcounter = 0;
+        } else if ((firstval != null) && (secondval == null) && (calculated == true)) {
+          operation = "multiply"
+          var x = firstval + " x ";
+          $("h2#memory").text(x);
+          calculated = false;
+        } else {
+          operation = "multiply"
+          firstval = parseFloat($("h2#display").text());
+          var i = $("h2#display").text();
+          var x = i + " x ";
+          $("h2#display").text("0");
+          $("h2#memory").text(x);
+        }
+      });
+      $("#minus").click(function() {
+        if ((firstval != null) && (secondval == null) && (calculated == false) && (multcounter == 0)) {
+          //incrementing multcounter
+          multcounter++;
+          //obtaining value of current display
+          secondval = parseFloat($("h2#display").text());
+          //Initialising current value to zero
+          $("h2#display").text("0");
+          switch (operation) {
+            case "multiply":
+              ans = firstval * secondval;
+              //inputing value into memory
+              $("h2#memory").text(ans);
+              //Initialising last answer as first value and second value as null to continue operations
+              firstval = ans;
+              secondval = null;
+              //Initialising last press operation
+              operation = "minus";
+              //memory values
+              var i = ans + " -"
+              $("h2#memory").text(i);
+              break;
+            case "minus":
+              ans = firstval - secondval;
+              $("h2#memory").text(ans);
+              firstval = ans;
+              secondval = null;
+              operation = "minus";
+              //memory values
+              var i = ans + " -"
+              $("h2#memory").text(i);
+              break;
+            case "plus":
+              ans = firstval + secondval;
+              $("h2#memory").text(ans);
+              firstval = ans;
+              secondval = null;
+              operation = "minus";
+              var i = ans + " - "
+              break;
+            case "divide":
+              ans = firstval / secondval;
+              $("h2#memory").text(ans);
+              firstval = ans;
+              secondval = null;
+              operation = "minus";
+              var i = ans + " - "
+              break;
+            default:
+              ans = "ERROR";
+              break;
+          }
+        } else if ((firstval != null) && (secondval == null) && (calculated == false) && (multcounter == 1)) {
+          var x = firstval + " - ";
+          $("h2#memory").text(x);
+          operation = "minus";
+          $("h2#display").text("0");
+          calculated = false;
+          multcounter = 0;
+        } else if ((firstval != null) && (secondval == null) && (calculated == true)) {
+          operation = "minus"
+          var x = firstval + " - ";
+          $("h2#memory").text(x);
+          calculated = false;
+        } else {
+          operation = "minus"
+          firstval = parseFloat($("h2#display").text());
+          var i = $("h2#display").text();
+          var x = i + " - ";
+          $("h2#display").text("0");
+          $("h2#memory").text(x);
+        }
+      });
+      $("#plus").click(function() {
+        if ((firstval != null) && (secondval == null) && (calculated == false) && (multcounter == 0)) {
+          //incrementing multcounter
+          multcounter++;
+          //obtaining value of current display
+          secondval = parseFloat($("h2#display").text());
+          //Initialising current value to zero
+          $("h2#display").text("0");
+          switch (operation) {
+            case "multiply":
+              ans = firstval * secondval;
+              //inputing value into memory
+              $("h2#memory").text(ans);
+              //Initialising last answer as first value and second value as null to continue operations
+              firstval = ans;
+              secondval = null;
+              //Initialising last press operation
+              operation = "plus";
+              //memory values
+              var i = ans + " + "
+              $("h2#memory").text(i);
+              break;
+            case "minus":
+              ans = firstval - secondval;
+              $("h2#memory").text(ans);
+              firstval = ans;
+              secondval = null;
+              operation = "plus";
+              //memory values
+              var i = ans + " + "
+              $("h2#memory").text(i);
+              break;
+            case "plus":
+              ans = firstval + secondval;
+              $("h2#memory").text(ans);
+              firstval = ans;
+              secondval = null;
+              operation = "plus";
+              var i = ans + " + "
+              break;
+            case "divide":
+              ans = firstval / secondval;
+              $("h2#memory").text(ans);
+              firstval = ans;
+              secondval = null;
+              operation = "plus";
+              var i = ans + " + "
+              break;
+            default:
+              ans = "ERROR";
+              break;
+          }
+        } else if ((firstval != null) && (secondval == null) && (calculated == false) && (multcounter == 1)) {
+          var x = firstval + " + ";
+          $("h2#memory").text(x);
+          operation = "plus";
+          $("h2#display").text("0");
+          calculated = false;
+          multcounter = 0;
+        } else if ((firstval != null) && (secondval == null) && (calculated == true)) {
+          operation = "plus"
+          var x = firstval + " + ";
+          $("h2#memory").text(x);
+          calculated = false;
+        } else {
+          operation = "plus"
+          firstval = parseFloat($("h2#display").text());
+          var i = $("h2#display").text();
+          var x = i + " + ";
+          $("h2#display").text("0");
+          $("h2#memory").text(x);
+        }
+      });
+      $("#divide").click(function() {
+        if ((firstval != null) && (secondval == null) && (calculated == false) && (multcounter == 0)) {
+          //incrementing multcounter
+          multcounter++;
+          //obtaining value of current display
+          secondval = parseFloat($("h2#display").text());
+          //Initialising current value to zero
+          $("h2#display").text("0");
+          switch (operation) {
+            case "multiply":
+              ans = firstval * secondval;
+              //inputing value into memory
+              $("h2#memory").text(ans);
+              //Initialising last answer as first value and second value as null to continue operations
+              firstval = ans;
+              secondval = null;
+              //Initialising last press operation
+              operation = "divide";
+              //memory values
+              var i = ans + " ÷ "
+              $("h2#memory").text(i);
+              break;
+            case "minus":
+              ans = firstval - secondval;
+              $("h2#memory").text(ans);
+              firstval = ans;
+              secondval = null;
+              operation = "divide";
+              //memory values
+              var i = ans + " ÷ "
+              $("h2#memory").text(i);
+              break;
+            case "plus":
+              ans = firstval + secondval;
+              $("h2#memory").text(ans);
+              firstval = ans;
+              secondval = null;
+              operation = "divide";
+              var i = ans + " ÷ "
+              break;
+            case "divide":
+              ans = firstval / secondval;
+              $("h2#memory").text(ans);
+              firstval = ans;
+              secondval = null;
+              operation = "divide";
+              var i = ans + " ÷ "
+              break;
+            default:
+              ans = "ERROR";
+              break;
+          }
+        } else if ((firstval != null) && (secondval == null) && (calculated == false) && (multcounter == 1)) {
+          var x = firstval + " ÷ ";
+          $("h2#memory").text(x);
+          operation = "divide";
+          $("h2#display").text("0");
+          calculated = false;
+          multcounter = 0;
+        } else if ((firstval != null) && (secondval == null) && (calculated == true)) {
+          operation = "divide"
+          var x = firstval + " ÷ ";
+          $("h2#memory").text(x);
+          calculated = false;
+        } else {
+          operation = "divide"
+          firstval = parseFloat($("h2#display").text());
+          var i = $("h2#display").text();
+          var x = i + " ÷ ";
+          $("h2#display").text("0");
+          $("h2#memory").text(x);
+        }
+      });
+      //calculator Logic after equals
+      $("#equals").click(function() {
+        var x = $("h2#memory").text();
+        secondval = parseFloat($("h2#display").text());
+        //setting to help identify from automated totals
+        calculated = true;
+        switch (operation) {
+          case "multiply":
+            ans = firstval * secondval;
+            //inputing value into memory
+            $("h2#display").text("");
+            //Initialising last answer as first value and second value as null to continue operations
+            firstval = ans;
+            secondval = null;
+            //Initialising memory to ans
+            $("h2#memory").text(ans);
+            //reinitialising operation
+            operation = null;
+            break;
+          case "minus":
+            ans = firstval - secondval;
+            $("h2#display").text("");
+            firstval = ans;
+            secondval = null;
+            $("h2#memory").text(ans);
+            operation = null;
+            break;
+          case "plus":
+            ans = firstval + secondval;
+            firstval = ans;
+            $("h2#display").text("");
+            secondval = null;
+            $("h2#memory").text(ans);
+            operation = null;
+            break;
+          case "divide":
+            ans = firstval / secondval;
+            $("h2#display").text("");
+            firstval = ans;
+            $("h2#memory").text(ans);
+            secondval = null;
+            operation = null;
+            break;
+          default:
+            ans = "ERROR";
+            break;
+        }
+      })
+    });
+  </script>
+</body>
+
+</html>
